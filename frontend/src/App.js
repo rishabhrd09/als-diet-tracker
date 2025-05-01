@@ -1,150 +1,121 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { getDietItems } from './api/dietApi';
-import DietList from './components/DietList';
-import DietForm from './components/DietForm';
-import DailySummary from './components/DailySummary';
-import NextFeed from './components/NextFeed';
-import './App.css'; // Main CSS file
+import React from 'react';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 
-// Helper to format date to YYYY-MM-DD
-const formatDate = (date) => {
-   const d = new Date(date);
-   let month = '' + (d.getMonth() + 1);
-   let day = '' + d.getDate();
-   const year = d.getFullYear();
+// MUI Components
+import {
+    AppBar, Toolbar, Typography, Container, Tabs, Tab, Box, CssBaseline, createTheme, ThemeProvider
+} from '@mui/material';
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu'; // Example Icon
 
-   if (month.length < 2) month = '0' + month;
-   if (day.length < 2) day = '0' + day;
+// Views
+import DailyTrackerView from './views/DailyTrackerView';
+import ScheduleTemplateView from './views/ScheduleTemplateView';
+import FormulaLibraryView from './views/FormulaLibraryView';
 
-   return [year, month, day].join('-');
+// Import base CSS if needed, but MUI handles most styling
+// import './App.css';
+
+// Create a basic MUI theme (optional, customize as needed)
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#4a90e2', // Your professional blue
+        },
+        secondary: {
+            main: '#f5a623', // An accent color (e.g., orange)
+        },
+    },
+    typography: {
+        fontFamily: 'sans-serif', // Keep it simple
+    },
+    components: {
+        // Example: Default props for Button
+        MuiButton: {
+            defaultProps: {
+                // variant: 'contained', // Make all buttons contained by default?
+            },
+        },
+         MuiTextField: {
+             defaultProps: {
+                 variant: 'outlined', // Use outlined style for text fields
+                 margin: 'dense', // Use dense margin
+             }
+         }
+    },
+});
+
+
+// Helper component to manage Tab state based on route
+function NavigationTabs() {
+    const location = useLocation();
+    const routeMap = ['/', '/schedule', '/library'];
+    // Find the index corresponding to the current pathname
+    let currentTab = routeMap.indexOf(location.pathname);
+    // Default to 0 (Daily Tracker) if route not found
+    if (currentTab === -1) {
+        currentTab = 0;
+    }
+
+    return (
+         <Box sx={{ width: '100%', borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper' }}>
+            <Tabs value={currentTab} centered indicatorColor="primary" textColor="primary">
+                {/* Use component={Link} to make Tabs act as router links */}
+                <Tab label="Daily Tracker" component={Link} to="/" />
+                <Tab label="Fixed Schedule" component={Link} to="/schedule" />
+                <Tab label="Formula Library" component={Link} to="/library" />
+            </Tabs>
+        </Box>
+    );
 }
 
 function App() {
-    const [dietItems, setDietItems] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [selectedItem, setSelectedItem] = useState(null); // For editing
-    const [showForm, setShowForm] = useState(false); // Toggle form visibility
-    const [currentDate, setCurrentDate] = useState(new Date()); // Track the currently viewed date
-
-    // Function to fetch items, memoized with useCallback
-    const fetchItems = useCallback(async (date) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const dateString = formatDate(date); // Format date for API
-            const response = await getDietItems(dateString);
-            setDietItems(response.data);
-        } catch (err) {
-            console.error("Error fetching diet items:", err);
-            setError("Failed to load diet items. Please check your connection or the API.");
-            setDietItems([]); // Clear items on error
-        } finally {
-            setLoading(false);
-        }
-    }, []); // Empty dependency array means this function is created once
-
-    // Initial fetch on component mount and when currentDate changes
-    useEffect(() => {
-        fetchItems(currentDate);
-    }, [fetchItems, currentDate]); // Depend on fetchItems and currentDate
-
-    const handleEdit = (item) => {
-        setSelectedItem(item);
-        setShowForm(true); // Show form when editing
-    };
-
-    const clearEditSelection = () => {
-        setSelectedItem(null);
-    };
-
-    // Function to refresh items (re-fetch for the current date)
-    const refreshItems = () => {
-        fetchItems(currentDate); 
-    };
-
-    const handleDateChange = (event) => {
-        setCurrentDate(new Date(event.target.value + 'T00:00:00')); // Set to start of the selected day in local time
-    };
-
-     const goToPreviousDay = () => {
-        const prevDay = new Date(currentDate);
-        prevDay.setDate(currentDate.getDate() - 1);
-        setCurrentDate(prevDay);
-     };
-
-     const goToNextDay = () => {
-        const nextDay = new Date(currentDate);
-        nextDay.setDate(currentDate.getDate() + 1);
-        setCurrentDate(nextDay);
-     };
-
-     const goToToday = () => {
-         setCurrentDate(new Date());
-     };
-
     return (
-        <div className="App">
-            <header className="app-header">
-                <h1>Papa Ka Diet chart</h1>
-                 {/* Add buttons as requested if needed, or integrate form toggle */}
-                <button onClick={() => setShowForm(!showForm)} className="toggle-form-btn">
-                    {showForm ? 'Hide Form' : (selectedItem ? 'Edit Item' : 'Add New Item')}
-                </button>
-                 <button onClick={goToToday} className="nav-btn">Go to Today</button>
-            </header>
+        // Apply the theme and baseline CSS reset
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <BrowserRouter>
+                <AppBar position="static" elevation={1}>
+                    <Container maxWidth="lg">
+                         <Toolbar disableGutters> {/* disableGutters removes default padding */}
+                             <RestaurantMenuIcon sx={{ mr: 1 }} /> {/* Add an icon */}
+                            <Typography
+                                variant="h6"
+                                component="div"
+                                sx={{ flexGrow: 1, fontWeight: 'bold' }} // Make title bold
+                            >
+                                ALS Tube Feeding Tracker
+                            </Typography>
+                            {/* Add any other header elements here if needed */}
+                        </Toolbar>
+                    </Container>
+                </AppBar>
 
-            <main>
-                <div className="date-navigation">
-                     <button onClick={goToPreviousDay} className="nav-btn">&lt; Prev Day</button>
-                     <input 
-                        type="date" 
-                        value={formatDate(currentDate)} 
-                        onChange={handleDateChange} 
-                        className="date-selector"
-                      />
-                     <button onClick={goToNextDay} className="nav-btn">Next Day &gt;</button>
-                     <h2>Schedule for: {currentDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h2>
-                </div>
+                {/* Navigation Tabs */}
+                <NavigationTabs />
 
+                {/* Main Content Area */}
+                <Container maxWidth="lg" sx={{ mt: 3, mb: 4 }}> {/* Add margin top/bottom */}
+                    <Routes>
+                        {/* Route mapping */}
+                        <Route path="/" element={<DailyTrackerView />} />
+                        <Route path="/schedule" element={<ScheduleTemplateView />} />
+                        <Route path="/library" element={<FormulaLibraryView />} />
+                        {/* Add a fallback route for unknown paths (optional) */}
+                        {/* <Route path="*" element={<NotFoundView />} /> */}
+                    </Routes>
+                </Container>
 
-                {error && <p className="error-message">{error}</p>}
-
-                {loading && <p>Loading...</p>}
-
-                {!loading && !error && (
-                    <>
-                         <DailySummary items={dietItems} />
-                         <NextFeed items={dietItems} currentDate={currentDate} />
-
-                         {/* Conditionally render form */}
-                         {showForm && (
-                             <div className="form-container">
-                                 <DietForm 
-                                    refreshItems={refreshItems} 
-                                    selectedItem={selectedItem}
-                                    clearSelection={clearEditSelection}
-                                    currentViewDate={currentDate} // Pass the current date to the form
-                                 />
-                             </div>
-                         )}
-
-                         <div className="list-container">
-                            <h3>Feeding Timeline</h3>
-                            <DietList 
-                                items={dietItems} 
-                                refreshItems={refreshItems} 
-                                onEdit={handleEdit} 
-                            />
-                         </div>
-                    </>
-                )}
-            </main>
-
-            <footer className="app-footer">
-                {/* Footer content if needed */}
-            </footer>
-        </div>
+                 {/* Footer (Optional) */}
+                 <Box component="footer" sx={{ bgcolor: 'background.paper', p: 2, mt: 'auto', borderTop: '1px solid #eee' }}>
+                    <Container maxWidth="lg">
+                        <Typography variant="body2" color="text.secondary" align="center">
+                            {/* Footer content here */}
+                            © {new Date().getFullYear()} Diet Tracker
+                        </Typography>
+                    </Container>
+                </Box>
+            </BrowserRouter>
+        </ThemeProvider>
     );
 }
 
