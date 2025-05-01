@@ -1,0 +1,111 @@
+ /* src/components/DietForm.css */
+
+.diet-form {
+    /* Container style is handled by .form-container in App.css */
+    /* Add specific form styling here */
+    padding: 5px; /* Add some internal padding if needed */
+}
+
+.diet-form h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.diet-form label {
+    display: block; /* Each label on its own line */
+    margin-bottom: 15px; /* Space between form fields */
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #444;
+}
+
+.diet-form input[type="text"],
+.diet-form input[type="time"],
+.diet-form input[type="number"],
+.diet-form input[type="date"],
+.diet-form textarea,
+.diet-form input[type="file"] {
+    width: 100%; /* Make inputs fill their container */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding and border in width */
+    margin-top: 5px; /* Space between label and input */
+    font-size: 1em;
+}
+
+.diet-form textarea {
+    min-height: 80px; /* Give textarea some initial height */
+    resize: vertical; /* Allow vertical resizing */
+}
+
+.diet-form input[type="file"] {
+    padding: 5px; /* File input looks different, adjust padding */
+}
+
+/* Style the image preview section */
+.image-preview-container {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    text-align: left; /* Or center */
+}
+
+.image-preview {
+    max-width: 150px; /* Limit preview size */
+    max-height: 150px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    display: block; /* Make image block level */
+    margin-top: 5px;
+}
+
+.image-preview-container button {
+    margin-left: 10px;
+    padding: 3px 8px;
+    font-size: 0.8em;
+    background-color: #ef5350; /* Red delete button */
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.image-preview-container button:hover {
+    opacity: 0.8;
+}
+
+
+/* Style the form action buttons */
+.form-actions {
+    margin-top: 20px;
+    text-align: right; /* Align buttons to the right */
+    padding-top: 15px;
+    border-top: 1px solid #eee; /* Separator line */
+}
+
+.form-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-left: 10px; /* Space between buttons */
+    transition: background-color 0.2s ease;
+}
+
+.form-actions button[type="submit"] {
+    background-color: #4a90e2; /* Blue for primary action */
+    color: white;
+}
+.form-actions button[type="submit"]:hover {
+    background-color: #357abd;
+}
+
+.form-actions button[type="button"] {
+    background-color: #bdbdbd; /* Grey for secondary action (Cancel) */
+    color: #333;
+}
+.form-actions button[type="button"]:hover {
+    background-color: #aaa;
+}

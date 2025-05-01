@@ -1,0 +1,18 @@
+ /* src/components/DietList.css */
+
+.diet-list {
+    list-style: none; /* Remove default bullet points */
+    padding: 0;
+    margin: 0;
+    margin-top: 15px; /* Add space if there's a heading above */
+}
+
+/* Styling for individual items is handled by DietListItem.css */
+
+/* Optional: Add message styling if list is empty */
+.diet-list + p { /* Style paragraph immediately following the list */
+    text-align: center;
+    color: #777;
+    margin-top: 20px;
+    font-style: italic;
+}

@@ -1,0 +1,32 @@
+ /* src/components/NextFeed.css */
+
+.next-feed {
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd; /* Default border */
+    background-color: #f9f9f9; /* Default subtle background */
+}
+
+.next-feed.upcoming {
+    border-left: 5px solid #ffb74d; /* Accent border for upcoming feed (orange) */
+    background-color: #fff8e1; /* Light yellow background */
+    border-color: #ffcc80;
+}
+
+.next-feed h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #e65100; /* Darker orange for emphasis */
+    font-size: 1.1em;
+}
+
+.next-feed p {
+    margin: 0;
+    color: #333;
+    font-size: 1em;
+}
+
+.next-feed p strong {
+    color: #000; /* Make food name slightly darker */
+}

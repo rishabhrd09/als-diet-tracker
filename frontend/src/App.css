@@ -1,0 +1,217 @@
+/* src/App.css */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background-color: #f4f7f6; /* Light background */
+  color: #333;
+}
+
+.App {
+  max-width: 1200px; /* Limit width for larger screens */
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.app-header {
+  background-color: #4a90e2; /* Professional blue */
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.toggle-form-btn, .nav-btn {
+   padding: 8px 15px;
+   background-color: #fff;
+   color: #4a90e2;
+   border: 1px solid #4a90e2;
+   border-radius: 5px;
+   cursor: pointer;
+   font-size: 0.9em;
+   margin-left: 10px;
+}
+
+.toggle-form-btn:hover, .nav-btn:hover {
+  background-color: #e8f0fe;
+}
+
+.date-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 15px; /* Space between elements */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.date-navigation h2 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #555;
+  text-align: center;
+  flex-basis: 100%; /* Make heading take full width on wrap */
+  order: -1; /* Put heading first visually when wrapped */
+  margin-bottom: 10px;
+}
+
+
+.date-selector {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+main {
+  display: grid; /* Use grid for layout */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+  gap: 20px;
+}
+
+.form-container, .list-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Add styles for DailySummary, NextFeed, DietList, DietListItem, DietForm in their respective CSS files */
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  background-color: #ffe0e0;
+  border: 1px solid red;
+  border-radius: 5px;
+  grid-column: 1 / -1; /* Span full width if using grid */
+}
+
+.loading-message {
+   text-align: center;
+   font-style: italic;
+   color: #666;
+   grid-column: 1 / -1; 
+}
+
+/* Example basic styles for DietListItem.css */
+/* src/components/DietListItem.css */
+.diet-item {
+  list-style: none;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Align items to top */
+  gap: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.diet-item.administered-item {
+  background-color: #e8f5e9; /* Light green */
+  opacity: 0.7;
+}
+
+.diet-item.skipped-item {
+  background-color: #ffebee; /* Light red */
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+
+.item-info {
+  flex-grow: 1; /* Take available space */
+}
+
+.item-time {
+  font-weight: bold;
+  color: #4a90e2;
+  margin-right: 10px;
+  display: inline-block; /* Prevent wrapping */
+  min-width: 80px; /* Give time some space */
+}
+
+.item-name {
+  font-size: 1.1em;
+  margin-right: 5px;
+}
+
+.item-qty {
+  color: #555;
+   margin-right: 5px;
+}
+
+.item-detail {
+  color: #777;
+  font-size: 0.9em;
+}
+
+.item-desc {
+  font-size: 0.9em;
+  color: #666;
+  margin: 5px 0 0 0;
+}
+
+.status {
+  display: block; /* Put status on new line */
+  font-size: 0.85em;
+  margin-top: 5px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block; /* Back to inline-block if preferred */
+}
+
+.status.pending { color: #ffa000; background-color: #fff3e0; border: 1px solid #ffa000;}
+.status.administered { color: #388e3c; background-color: #e8f5e9; border: 1px solid #388e3c;}
+.status.skipped { color: #d32f2f; background-color: #ffebee; border: 1px solid #d32f2f; }
+
+
+.item-image {
+  max-width: 100px; /* Limit image size */
+  max-height: 100px;
+  margin-top: 10px;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  display: block;
+}
+
+.item-actions {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  gap: 5px; /* Space between buttons */
+  align-items: flex-end; /* Align buttons to the right */
+  flex-shrink: 0; /* Prevent actions area from shrinking */
+}
+
+.action-btn {
+  padding: 5px 10px;
+  font-size: 0.85em;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  min-width: 90px; /* Ensure buttons have minimum width */
+}
+
+.administer-btn { background-color: #66bb6a; color: white; }
+.skip-btn { background-color: #ef5350; color: white; }
+.pending-btn { background-color: #ffb74d; color: white;}
+.edit-btn { background-color: #42a5f5; color: white; }
+.delete-btn { background-color: #bdbdbd; color: #333; }
+
+.action-btn:hover {
+  opacity: 0.8;
+}

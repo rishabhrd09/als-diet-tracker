@@ -1,0 +1,158 @@
+ /* src/components/DietListItem.css */
+
+.diet-item {
+    list-style: none; /* Remove default list styling */
+    padding: 15px;
+    margin-bottom: 12px; /* Space between items */
+    border: 1px solid #e0e0e0; /* Subtle border */
+    border-radius: 6px; /* Slightly rounded corners */
+    background-color: #ffffff; /* White background for each item card */
+    display: flex;
+    justify-content: space-between; /* Push info and actions apart */
+    align-items: flex-start; /* Align content to the top */
+    gap: 15px; /* Space between info and actions columns */
+    transition: background-color 0.3s ease, opacity 0.3s ease; /* Smooth transitions */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05); /* Subtle shadow */
+}
+
+/* Styling for administered items */
+.diet-item.administered-item {
+    background-color: #f0f7f0; /* Very light green */
+    border-left: 4px solid #66bb6a; /* Green left border */
+    opacity: 0.85; /* Slightly faded */
+}
+/* Optional: Add strikethrough for administered item text */
+/* .diet-item.administered-item .item-info {
+    text-decoration: line-through;
+    text-decoration-color: #aaa;
+} */
+
+
+/* Styling for skipped items */
+.diet-item.skipped-item {
+    background-color: #fdf0f0; /* Very light red */
+    border-left: 4px solid #ef5350; /* Red left border */
+    opacity: 0.7; /* More faded */
+}
+/* Add strikethrough for skipped item text */
+.diet-item.skipped-item .item-info {
+    text-decoration: line-through;
+    text-decoration-color: #aaa;
+}
+
+
+/* Container for the main text information */
+.item-info {
+    flex-grow: 1; /* Allow info section to take available space */
+    line-height: 1.4; /* Improve readability */
+}
+
+.item-time {
+    font-weight: bold;
+    color: #4a90e2; /* Use main theme color */
+    margin-right: 10px;
+    display: inline-block; /* Keep time on the same line */
+    min-width: 80px; /* Ensure consistent spacing */
+    font-size: 1.05em;
+}
+
+.item-name {
+    font-size: 1.1em;
+    font-weight: 600; /* Make name stand out */
+    margin-right: 8px;
+    color: #333;
+}
+
+.item-qty {
+    color: #555;
+     margin-right: 8px;
+     font-size: 1em;
+}
+
+.item-detail {
+    color: #777;
+    font-size: 0.9em;
+    white-space: nowrap; /* Prevent wrapping of details like P: C: F: */
+    margin-right: 5px; /* Space between details */
+}
+
+.item-desc {
+    font-size: 0.9em;
+    color: #666;
+    margin: 8px 0 5px 0; /* Space around description */
+    display: block; /* Ensure it takes its own line if long */
+}
+
+/* Status indicator (Pending/Administered/Skipped) */
+.status {
+    display: inline-block; /* Keep it neat */
+    font-size: 0.8em;
+    margin-top: 8px;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 10px; /* Pill shape */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status.pending {
+    color: #c65e00; /* Dark orange text */
+    background-color: #fff3e0; /* Light orange background */
+    border: 1px solid #ffe0b2; /* Lighter orange border */
+}
+.status.administered {
+    color: #2e7d32; /* Dark green text */
+    background-color: #e8f5e9; /* Light green background */
+    border: 1px solid #c8e6c9; /* Lighter green border */
+}
+.status.skipped {
+    color: #b71c1c; /* Dark red text */
+    background-color: #ffebee; /* Light red background */
+    border: 1px solid #ffcdd2; /* Lighter red border */
+}
+
+
+/* Styling for the uploaded image */
+.item-image {
+    max-width: 100px; /* Adjust as needed */
+    max-height: 100px;
+    margin-top: 10px;
+    border-radius: 4px;
+    border: 1px solid #eee;
+    display: block; /* Ensure image doesn't cause weird inline spacing */
+    object-fit: cover; /* Ensure image covers the area nicely */
+}
+
+/* Container for action buttons */
+.item-actions {
+    display: flex;
+    flex-direction: column; /* Stack buttons */
+    gap: 6px; /* Space between buttons */
+    align-items: flex-end; /* Align buttons to the right */
+    flex-shrink: 0; /* Prevent this column from shrinking */
+}
+
+/* General action button styling */
+.action-btn {
+    padding: 6px 12px;
+    font-size: 0.85em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    min-width: 95px; /* Consistent button width */
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+    color: white; /* Default text color */
+}
+
+.action-btn:hover {
+    opacity: 0.85; /* Slight fade on hover */
+}
+
+/* Specific button colors */
+.administer-btn { background-color: #66bb6a; } /* Green */
+.skip-btn { background-color: #ef5350; } /* Red */
+.pending-btn { background-color: #ffb74d; } /* Orange */
+.edit-btn { background-color: #42a5f5; } /* Blue */
+.delete-btn { background-color: #bdbdbd; color: #333; } /* Grey */
+.delete-btn:hover { background-color: #aaa; }
