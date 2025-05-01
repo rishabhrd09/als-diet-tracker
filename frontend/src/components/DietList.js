@@ -1,31 +1,32 @@
 import React from 'react';
 import DietListItem from './DietListItem';
-import './DietList.css'; // Create CSS for list styling
+// Assuming DietList.css exists for basic list styling if needed
+// import './DietList.css';
 
-function DietList({ items, refreshItems, onEdit }) {
+// Accept isDisabled prop
+function DietList({ items, refreshItems, onEdit, isDisabled }) {
     if (!items || items.length === 0) {
-        return <p>No diet items scheduled for this date.</p>;
+        // Use Typography for consistent styling if using MUI elsewhere
+        // return <Typography align="center" color="text.secondary" sx={{mt: 3}}>No diet items scheduled for this date.</Typography>;
+        return <p style={{textAlign: 'center', color: '#666', marginTop: '20px'}}>No diet items scheduled for this date.</p>;
     }
 
-    // Sort items by time before rendering (API already sorts, but good practice)
-    const sortedItems = [...items].sort((a, b) => {
-        // Convert HH:MM:SS to comparable values
-        const timeA = a.timing.split(':').map(Number);
-        const timeB = b.timing.split(':').map(Number);
-        if (timeA[0] !== timeB[0]) return timeA[0] - timeB[0]; // Compare hours
-        if (timeA[1] !== timeB[1]) return timeA[1] - timeB[1]; // Compare minutes
-        return timeA[2] - timeB[2]; // Compare seconds
-    });
-
+    // Sorting is handled by backend now, but double-checking doesn't hurt
+    // const sortedItems = [...items].sort((a, b) => { ... });
+    // Using items directly as returned by backend
 
     return (
-        <ul className="diet-list">
-            {sortedItems.map(item => (
-                <DietListItem 
-                    key={item.id} 
-                    item={item} 
+        // Use MUI List component for better integration? Optional.
+        // <List disablePadding> ... </List>
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            {items.map(item => (
+                // Pass isDisabled down to each item
+                <DietListItem
+                    key={item.id} // Crucial for React updates
+                    item={item}
                     refreshItems={refreshItems}
-                    onEdit={onEdit} 
+                    onEdit={onEdit}
+                    isDisabled={isDisabled} // Pass the flag down
                 />
             ))}
         </ul>

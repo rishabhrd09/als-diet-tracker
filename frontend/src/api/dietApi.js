@@ -3,53 +3,33 @@ import axios from 'axios';
 // Use environment variable for API URL, fallback to localhost for development
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api';
 
+// Create an Axios instance for making API requests
 const apiClient = axios.create({
     baseURL: API_BASE_URL,
-    // We might need credentials if using session auth later
-    // withCredentials: true, 
     headers: {
         'Content-Type': 'application/json',
-        // Add CSRF token header if needed (Django usually checks this)
-        // 'X-CSRFToken': getCookie('csrftoken'), // You'd need a function to get the cookie
     },
+    // withCredentials: true, // Uncomment if using session auth across different origins
 });
-
-// Helper function to get CSRF token from cookies (if needed)
-// function getCookie(name) {
-//     let cookieValue = null;
-//     if (document.cookie && document.cookie !== '') {
-//         const cookies = document.cookie.split(';');
-//         for (let i = 0; i < cookies.length; i++) {
-//             const cookie = cookies[i].trim();
-//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
-//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//                 break;
-//             }
-//         }
-//     }
-//     return cookieValue;
-// }
-
 
 // --- Diet Item (Daily Tracker) API Calls ---
 
-// Fetch diet items for a specific date (YYYY-MM-DD)
-// Backend now handles template generation if items don't exist for the date
+/** Fetches diet items for a specific date (YYYY-MM-DD). */
 export const getDietItems = (date) => {
     if (!date) {
         console.error("Date parameter is required for getDietItems");
-        return Promise.reject(new Error("Date parameter is required")); // Or handle appropriately
+        return Promise.reject(new Error("Date parameter is required"));
     }
     const params = { date };
     return apiClient.get('/diet-items/', { params });
 };
 
-// Fetch a single diet item by ID
+/** Fetches a single diet item by its ID. */
 export const getDietItem = (id) => {
     return apiClient.get(`/diet-items/${id}/`);
 };
 
-// Create a new AD-HOC diet item (handles FormData for image upload)
+/** Creates a new ad-hoc diet item. Handles image uploads via FormData. */
 export const addDietItem = (itemData) => {
     const isFormData = itemData instanceof FormData;
     return apiClient.post('/diet-items/', itemData, {
@@ -57,7 +37,7 @@ export const addDietItem = (itemData) => {
     });
 };
 
-// Update an existing diet item (handles FormData for image upload)
+/** Updates an existing diet item completely (PUT). Handles image uploads. */
 export const updateDietItem = (id, itemData) => {
     const isFormData = itemData instanceof FormData;
     return apiClient.put(`/diet-items/${id}/`, itemData, {
@@ -65,7 +45,7 @@ export const updateDietItem = (id, itemData) => {
     });
 };
 
-// Partially update an existing diet item
+/** Partially updates an existing diet item (PATCH). Handles image uploads. */
 export const patchDietItem = (id, itemData) => {
      const isFormData = itemData instanceof FormData;
      return apiClient.patch(`/diet-items/${id}/`, itemData, {
@@ -73,74 +53,38 @@ export const patchDietItem = (id, itemData) => {
      });
 };
 
-// Delete a diet item
+/** Deletes a specific diet item. */
 export const deleteDietItem = (id) => {
     return apiClient.delete(`/diet-items/${id}/`);
 };
 
-// Mark item as administered
+/** Marks a specific diet item as administered. */
 export const markItemAdministered = (id) => {
     return apiClient.post(`/diet-items/${id}/mark-administered/`);
 };
 
-// Mark item as skipped
+/** Marks a specific diet item as skipped. */
 export const markItemSkipped = (id) => {
     return apiClient.post(`/diet-items/${id}/mark-skipped/`);
 };
 
-// Mark item as pending (reset status)
+/** Resets the status of a specific diet item to pending. */
 export const markItemPending = (id) => {
     return apiClient.post(`/diet-items/${id}/mark-pending/`);
 };
 
-
-// --- Food Formula (Library) API Calls --- NEW ---
-
-export const getFoodFormulas = () => {
-    return apiClient.get('/food-formulas/');
-};
-
-export const addFoodFormula = (formulaData) => {
-    return apiClient.post('/food-formulas/', formulaData);
-};
-
-export const updateFoodFormula = (id, formulaData) => {
-    return apiClient.put(`/food-formulas/${id}/`, formulaData);
-};
-
-export const deleteFoodFormula = (id) => {
-    return apiClient.delete(`/food-formulas/${id}/`);
-};
+// --- REMOVED resetDayToTemplate function ---
 
 
-// --- Schedule Template API Calls --- NEW ---
+// --- Food Formula (Library) API Calls ---
+export const getFoodFormulas = () => apiClient.get('/food-formulas/');
+export const addFoodFormula = (formulaData) => apiClient.post('/food-formulas/', formulaData);
+export const updateFoodFormula = (id, formulaData) => apiClient.put(`/food-formulas/${id}/`, formulaData);
+export const deleteFoodFormula = (id) => apiClient.delete(`/food-formulas/${id}/`);
 
-export const getScheduleTemplates = () => {
-    return apiClient.get('/schedule-templates/');
-};
-
-export const addScheduleTemplate = (templateData) => {
-    return apiClient.post('/schedule-templates/', templateData);
-};
-
-export const updateScheduleTemplate = (id, templateData) => {
-    return apiClient.put(`/schedule-templates/${id}/`, templateData);
-};
-
-export const deleteScheduleTemplate = (id) => {
-    return apiClient.delete(`/schedule-templates/${id}/`);
-};
-
-
-// --- Axios Interceptor Example (Optional: for handling errors globally) ---
-// apiClient.interceptors.response.use(
-//     response => response,
-//     error => {
-//         console.error("API Call Error:", error.response || error.message || error);
-//         // Can add logic here to redirect on 401/403, show global notifications, etc.
-//         return Promise.reject(error);
-//     }
-// );
-
-export default apiClient; // Keep default export if needed elsewhere, otherwise named exports are fine
+// --- Schedule Template API Calls ---
+export const getScheduleTemplates = () => apiClient.get('/schedule-templates/');
+export const addScheduleTemplate = (templateData) => apiClient.post('/schedule-templates/', templateData);
+export const updateScheduleTemplate = (id, templateData) => apiClient.put(`/schedule-templates/${id}/`, templateData);
+export const deleteScheduleTemplate = (id) => apiClient.delete(`/schedule-templates/${id}/`);
 
