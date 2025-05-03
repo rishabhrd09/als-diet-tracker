@@ -156,4 +156,3 @@ function ScheduleTemplateView() {
 }
 
 export default ScheduleTemplateView;
-
