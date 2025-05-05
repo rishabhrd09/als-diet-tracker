@@ -19,31 +19,64 @@ class ScheduledItemTemplateViewSet(viewsets.ModelViewSet):
     serializer_class = ScheduledItemTemplateSerializer
 
 
-# --- DietItemViewSet with Smart Sync ---
+# # --- DietItemViewSet with Smart Sync ---
+# class DietItemViewSet(viewsets.ModelViewSet):
+#     serializer_class = DietItemSerializer
+
+#     def get_queryset(self):
+#         queryset = DietItem.objects.all()
+#         date_param = self.request.query_params.get('date')
+
+#         if not date_param: return DietItem.objects.none()
+#         try: target_date = datetime.datetime.strptime(date_param, '%Y-%m-%d').date()
+#         except ValueError: return DietItem.objects.none()
+
+#         # --- Synchronization Logic for Today/Future Dates ---
+#         today = timezone.now().date()
+#         if target_date >= today:
+#             try:
+#                 with transaction.atomic():
+#                     self._synchronize_template_items(target_date)
+#             except Exception as e:
+#                 print(f"Error during template sync for {target_date}: {e}")
+#                 # Consider how to handle sync errors - log and continue for now
+#         # --- End Synchronization Logic ---
+
+#         queryset = queryset.filter(scheduled_date=target_date)
+#         return queryset.order_by('timing')
+
 class DietItemViewSet(viewsets.ModelViewSet):
     serializer_class = DietItemSerializer
 
     def get_queryset(self):
-        queryset = DietItem.objects.all()
-        date_param = self.request.query_params.get('date')
-
-        if not date_param: return DietItem.objects.none()
-        try: target_date = datetime.datetime.strptime(date_param, '%Y-%m-%d').date()
-        except ValueError: return DietItem.objects.none()
-
-        # --- Synchronization Logic for Today/Future Dates ---
-        today = timezone.now().date()
-        if target_date >= today:
+        # Handle LIST action separately with date filtering and sync
+        if self.action == 'list':
+            date_param = self.request.query_params.get('date')
+            
+            if not date_param:
+                return DietItem.objects.none()
+            
             try:
-                with transaction.atomic():
-                    self._synchronize_template_items(target_date)
-            except Exception as e:
-                print(f"Error during template sync for {target_date}: {e}")
-                # Consider how to handle sync errors - log and continue for now
-        # --- End Synchronization Logic ---
+                target_date = datetime.datetime.strptime(date_param, '%Y-%m-%d').date()
+            except ValueError:
+                return DietItem.objects.none()
 
-        queryset = queryset.filter(scheduled_date=target_date)
-        return queryset.order_by('timing')
+            # Sync logic only for today/future dates
+            today = timezone.now().date()
+            if target_date >= today:
+                try:
+                    with transaction.atomic():
+                        self._synchronize_template_items(target_date)
+                except Exception as e:
+                    print(f"Sync error: {e}")
+
+            return DietItem.objects.filter(
+                scheduled_date=target_date
+            ).order_by('timing')
+
+        # For all other actions (retrieve, update, partial_update, destroy)
+        # Return full queryset without date filtering
+        return DietItem.objects.all()
 
 
     def _synchronize_template_items(self, target_date):

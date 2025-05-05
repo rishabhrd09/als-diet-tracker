@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-// Keep needed API calls: administer and skip
-import { markItemAdministered, markItemSkipped } from '../api/dietApi';
+// Import all necessary API calls for status changes
+import { markItemAdministered, markItemSkipped, markItemPending } from '../api/dietApi';
+// Removed deleteDietItem import
 
 // MUI Components
 import {
     ListItem, ListItemText, Box, Typography, Chip, Tooltip, CircularProgress,
-    Button // Keep Button import
+    Button
 } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // Administered/Consumed
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // Consumed
 import CancelIcon from '@mui/icons-material/Cancel'; // Skip
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'; // Pending
 import EditIcon from '@mui/icons-material/Edit'; // Edit Button
-// Removed DeleteIcon, UndoIcon imports as Delete and Pending buttons are removed
+import UndoIcon from '@mui/icons-material/Undo'; // Reset Status (Pending) Button
+// Removed DeleteIcon import
 
 // Helper to format time
 const formatTime = (timeString) => {
@@ -31,7 +33,7 @@ function DietListItem({ item, refreshItems, onEdit, isDisabled, isEditMode }) {
 
     // Log item rendering (optional for debugging)
     useEffect(() => {
-        // console.log(`DietListItem rendering/updated for ID: ${item?.id}, Name: ${item?.food_name}`);
+        // console.log(`DietListItem rendering/updated for ID: ${item?.id}, Status: ${item.is_administered ? 'Admin' : (item.is_skipped ? 'Skip' : 'Pend')}`);
     }, [item]);
 
     /** Generic handler for API actions */
@@ -44,11 +46,11 @@ function DietListItem({ item, refreshItems, onEdit, isDisabled, isEditMode }) {
         }
         setActionLoading(true);
         try {
-            await actionFn(itemId); // Call the API function (e.g., markItemAdministered)
+            await actionFn(itemId); // Call the API function
+            console.log(`HANDLE ACTION: API call ${actionFn.name} successful for ID: ${itemId}. Refreshing items...`);
             refreshItems(); // Refresh the list in the parent component
         } catch (error) {
             console.error(`HANDLE ACTION ERROR (${actionName}, ID: ${itemId}):`, error.response?.data || error.message || error);
-            // Provide specific feedback for common errors like 404
             if (error.response?.status === 404) {
                  alert(`${actionName} failed. Item with ID ${itemId} not found on server. The list might be out of sync.`);
             } else {
@@ -60,17 +62,16 @@ function DietListItem({ item, refreshItems, onEdit, isDisabled, isEditMode }) {
     };
 
     // --- Action Handlers ---
-    // Handler for the "Consumed" button (calls markItemAdministered)
-    const handleAdministerClick = () => handleAction(markItemAdministered, item.id, "Administer");
-    // Handler for the "Skip" button (calls markItemSkipped)
+    const handleConsumedClick = () => handleAction(markItemAdministered, item.id, "Consumed");
     const handleSkipClick = () => handleAction(markItemSkipped, item.id, "Skip");
-    // Removed handlePendingClick, handleDeleteClick
+    const handlePendingClick = () => handleAction(markItemPending, item.id, "Mark Pending");
+    // Removed handleDeleteClick
 
     // Handler for the "Edit" button
     const handleEditClick = () => {
         // Only trigger edit if buttons are not generally disabled
         if (!buttonsDisabled) {
-            console.log(`Calling onEdit for current item prop ID: ${item?.id}`);
+            // console.log(`Calling onEdit for current item prop ID: ${item?.id}`);
             onEdit(item); // Call the onEdit function passed from the parent
         }
     };
@@ -95,9 +96,9 @@ function DietListItem({ item, refreshItems, onEdit, isDisabled, isEditMode }) {
             divider // Adds a visual separator line
             sx={{
                 // Apply visual styles based on the item's status
-                opacity: (item.is_administered || item.is_skipped) ? 0.7 : 1, // Fade completed/skipped items
+                opacity: (item.is_administered || item.is_skipped) ? 0.8 : 1, // Slightly fade completed/skipped items
                 backgroundColor: item.is_administered ? 'action.hover' : 'inherit', // Subtle background for consumed
-                textDecoration: item.is_skipped ? 'line-through' : 'none', // Line through skipped items
+                // textDecoration: item.is_skipped ? 'line-through' : 'none', // Optional: line through skipped items
                 alignItems: 'flex-start', // Align content to the top
                 py: 1.5 // Vertical padding
             }}
@@ -168,7 +169,7 @@ function DietListItem({ item, refreshItems, onEdit, isDisabled, isEditMode }) {
                                     <Tooltip title="Mark as Consumed"><span>
                                         <Button
                                             size="small" variant="contained" color="success"
-                                            startIcon={<CheckCircleIcon />} onClick={handleAdministerClick}
+                                            startIcon={<CheckCircleIcon />} onClick={handleConsumedClick}
                                             disabled={buttonsDisabled}
                                             sx={{ minWidth: 110, justifyContent: 'flex-start' }}
                                         >
@@ -187,6 +188,19 @@ function DietListItem({ item, refreshItems, onEdit, isDisabled, isEditMode }) {
                                     </span></Tooltip>
                                 </>
                             )}
+                            {/* Show "Pending" (Reset Status) button only if item is NOT Pending */}
+                            {(item.is_administered || item.is_skipped) && (
+                                 <Tooltip title="Reset Status to Pending"><span>
+                                    <Button
+                                        size="small" variant="outlined" color="warning"
+                                        startIcon={<UndoIcon />} onClick={handlePendingClick}
+                                        disabled={buttonsDisabled}
+                                        sx={{ minWidth: 110, justifyContent: 'flex-start' }}
+                                    >
+                                        Pending
+                                    </Button>
+                                 </span></Tooltip>
+                            )}
                             {/* Show "Edit" button always (when in edit mode) */}
                             <Tooltip title="Edit this item for this day"><span>
                                 <Button
@@ -198,7 +212,7 @@ function DietListItem({ item, refreshItems, onEdit, isDisabled, isEditMode }) {
                                     Edit
                                 </Button>
                             </span></Tooltip>
-                            {/* Delete and Pending buttons are removed */}
+                            {/* Delete button is removed */}
                         </>
                     )}
                 </Box>

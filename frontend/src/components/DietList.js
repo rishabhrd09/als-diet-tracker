@@ -1,32 +1,27 @@
 import React from 'react';
 import DietListItem from './DietListItem';
-// Assuming DietList.css exists for basic list styling if needed
-// import './DietList.css';
+// import { List, Typography } from '@mui/material'; // Optional MUI imports
 
-// Accept isDisabled prop
-function DietList({ items, refreshItems, onEdit, isDisabled }) {
+// --- Accept isEditMode and onEdit props ---
+function DietList({ items, refreshItems, isDisabled, isEditMode, onEdit }) {
     if (!items || items.length === 0) {
-        // Use Typography for consistent styling if using MUI elsewhere
         // return <Typography align="center" color="text.secondary" sx={{mt: 3}}>No diet items scheduled for this date.</Typography>;
         return <p style={{textAlign: 'center', color: '#666', marginTop: '20px'}}>No diet items scheduled for this date.</p>;
     }
 
-    // Sorting is handled by backend now, but double-checking doesn't hurt
-    // const sortedItems = [...items].sort((a, b) => { ... });
-    // Using items directly as returned by backend
-
+    // No longer filtering skipped items here, DietListItem handles its own display/actions
     return (
-        // Use MUI List component for better integration? Optional.
-        // <List disablePadding> ... </List>
+        // Using ul, but could switch to MUI List
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {items.map(item => (
-                // Pass isDisabled down to each item
+                // Pass relevant props down, including isEditMode and onEdit
                 <DietListItem
                     key={item.id} // Crucial for React updates
                     item={item}
                     refreshItems={refreshItems}
-                    onEdit={onEdit}
-                    isDisabled={isDisabled} // Pass the flag down
+                    onEdit={onEdit} // <<< PASS onEdit PROP HERE
+                    isDisabled={isDisabled}
+                    isEditMode={isEditMode} // <<< PASS isEditMode PROP HERE
                 />
             ))}
         </ul>
